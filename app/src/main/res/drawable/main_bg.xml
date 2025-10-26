@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Glass morphism base -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#80E6F7FF"
+                android:centerColor="#80B3E6FF"
+                android:endColor="#8080D4FF"
+                android:angle="135" />
+        </shape>
+    </item>
+
+    <!-- Frosted glass effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#A0FFFFFF"
+                android:endColor="#20FFFFFF"
+                android:angle="90" />
+        </shape>
+    </item>
+
+    <!-- Glass border with blur effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="1dp"
+                android:color="#B0FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

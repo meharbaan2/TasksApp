@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Subtle blue glass base -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#4066B3FF"
+                android:centerColor="#4080CCFF"
+                android:endColor="#4099D6FF"
+                android:angle="135" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+    <!-- Glass highlight -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#80FFFFFF"
+                android:endColor="#00000000"
+                android:angle="90" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+    <!-- Very subtle border -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="0.7dp"
+                android:color="#80FFFFFF" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+</layer-list>

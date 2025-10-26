@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Ultra translucent glass -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#30FFFFFF"
+                android:endColor="#20E6F2FF"
+                android:angle="135" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <!-- Glass reflection -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#50FFFFFF"
+                android:endColor="#00000000"
+                android:angle="90" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <!-- Very subtle border -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="0.3dp"
+                android:color="#40FFFFFF" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</layer-list>

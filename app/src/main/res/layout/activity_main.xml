@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:background="@drawable/main_bg">
+
+    <!-- Header matching widget style -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_title"
+            android:textColor="#0066CC"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:gravity="start" />
+
+        <TextView
+            android:id="@+id/app_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_default_time"
+            android:textColor="#0066CC"
+            android:textSize="14sp"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
+
+    </LinearLayout>
+
+    <!-- Task Lists Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Spinner
+            android:id="@+id/list_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_bg"
+            android:padding="12dp"
+            android:minHeight="48dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="#0066CC"
+            android:popupBackground="@drawable/dialog_bg" />
+
+        <TextView
+            android:id="@+id/manage_lists_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/manage_lists_icon"
+            android:textSize="14sp"
+            android:background="@drawable/icon_button_bg"
+            android:padding="12dp"
+            android:gravity="center"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/add_list_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_list"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/button_glass_blue"
+            android:padding="12dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Add alarm section before tasks -->
+    <LinearLayout
+        android:id="@+id/alarm_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/active_alarms"
+            android:textColor="#0066CC"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Alarms will be added dynamically here -->
+
+    </LinearLayout>
+
+    <!-- Input section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+
+        <EditText
+            android:id="@+id/task_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/enter_new_task"
+            android:textColor="#0066CC"
+            android:textColorHint="#666666"
+            android:background="@drawable/edit_text_bg"
+            android:padding="16dp"
+            android:layout_marginEnd="12dp"
+            android:textSize="14sp"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:autofillHints="username" />
+
+        <TextView
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:background="@drawable/button_glass_blue"
+            android:padding="16dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Tasks section header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/your_tasks"
+            android:textColor="#0066CC"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
+
+        <TextView
+            android:id="@+id/tasks_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zero_tasks"
+            android:textColor="#0066CC"
+            android:textSize="12sp"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2" />
+
+    </LinearLayout>
+
+    <!-- Tasks container with scroll -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
+        android:background="#00000000">
+
+        <LinearLayout
+            android:id="@+id/tasks_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#00000000" />
+
+    </ScrollView>
+
+</LinearLayout>

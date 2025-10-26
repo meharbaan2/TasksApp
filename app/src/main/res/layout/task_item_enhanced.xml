@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/task_item"
+    android:orientation="vertical"
+    android:padding="14dp"
+    android:background="@drawable/task_item_bg"
+    android:layout_marginBottom="6dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Main task row - Removed unnecessary parent LinearLayout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/task_item_bg">
+
+        <!-- Indentation for subtasks -->
+        <LinearLayout
+            android:id="@+id/task_indent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:orientation="horizontal" />
+
+        <!-- Drag handle -->
+        <TextView
+            android:id="@+id/task_drag_handle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:text="@string/drag_handle"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Checkbox as TextView (to match your design) -->
+        <TextView
+            android:id="@+id/task_checkbox"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:text="@string/checkbox_unchecked"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#0066CC"
+            android:shadowColor="#80FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:gravity="center"
+            android:background="@drawable/checkbox_bg" />
+
+        <!-- Task content column -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp">
+
+            <TextView
+                android:id="@+id/task_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_task"
+                android:textSize="15sp"
+                android:textColor="#0066CC"
+                android:shadowColor="#80FFFFFF"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:gravity="center_vertical" />
+
+            <!-- Due date and subtasks info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/task_due_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/due_tomorrow"
+                    android:textSize="11sp"
+                    android:textColor="#666666"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task_subtasks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtasks_sample"
+                    android:textSize="11sp"
+                    android:textColor="#666666"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Action buttons with alarm indicator -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Alarm indicator - moved to right side -->
+            <TextView
+                android:id="@+id/task_alarm_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_sample"
+                android:textSize="11sp"
+                android:textColor="#FF6B6B"
+                android:background="@drawable/alarm_indicator_bg"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:visibility="gone"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Move subtask button -->
+            <TextView
+                android:id="@+id/task_move_subtask"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="@string/move_subtask"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:background="@drawable/icon_button_bg"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/task_set_reminder"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="@string/set_reminder"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:background="@drawable/icon_button_bg"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:id="@+id/task_add_subtask"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="@string/add_subtask"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:background="@drawable/icon_button_bg"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:id="@+id/task_delete"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="@string/delete_task"
+                android:textSize="12sp"
+                android:textColor="#FF4444"
+                android:gravity="center"
+                android:background="@drawable/icon_button_bg" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
