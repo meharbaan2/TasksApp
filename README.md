@@ -29,7 +29,7 @@
 
 ## 📸 Screenshots
 
-![App Screenshot](images/screenshot.png)
+![App Screenshot](images/screenshot.png) ![App Screenshot](images/screenshot_2.png)
 - Main app interface
 - Widget on home screen
 - Task creation dialog
@@ -52,14 +52,14 @@
    cd tasks-app
 
 2. **Open in Android Studio**
-   ```bash
-   git clone https://github.com/meharbaan2/TasksApp
-   cd tasks-app
+   Open Android Studio
+   Select "Open an existing project"
+   Navigate to the cloned directory
 
 3. **Build and Run**
-   ```bash
-   git clone https://github.com/meharbaan2/TasksApp
-   cd tasks-app   
+   Connect your Android device or start an emulator
+   Select your target device
+   Click Run ▶️ in Android Studio
 
 ---
 
