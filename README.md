@@ -1,6 +1,6 @@
 # Task Manager App with Widget
 
- A Frutiger Aero–style Android task app with a clear glass widget and full task management features.
+ A Frutiger Aero–style Android task app with multiple lists, due-date reminders, subtasks, and a clear glass home-screen widget.
 
 ## 🚀 Features
 
