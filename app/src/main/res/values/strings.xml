@@ -1,40 +1,110 @@
 <resources>
     <string name="app_name">Lucid Tasks</string>
     <string name="widget_description">Futuristic Task Manager</string>
-    <string name="subtasks_progress">%1$d/%2$d</string>
-    <!-- Widget Layout Strings -->
+    <string name="default_list_name">My Tasks</string>
+
     <string name="widget_default_title">To Do</string>
     <string name="widget_default_time">12:00 PM</string>
     <string name="add_task">+ ADD TASK</string>
-    <!-- Task Item Strings -->
-    <string name="drag_handle">☰</string>
-    <string name="checkbox_unchecked">○</string>
+
+    <string name="drag_handle">&#9776;</string>
+    <string name="checkbox_unchecked">&#9675;</string>
+    <string name="checkbox_checked">&#10003;</string>
     <string name="sample_task">Sample task</string>
     <string name="due_tomorrow">Due: Tomorrow</string>
     <string name="subtasks_sample">2/5</string>
     <string name="alarm_sample">2h</string>
-    <string name="move_subtask">↷</string>
-    <string name="set_reminder">⏰</string>
+    <string name="move_subtask">&#8635;</string>
+    <string name="set_reminder">&#9200;</string>
     <string name="add_subtask">+</string>
-    <string name="delete_task">✕</string>
-    <!-- Dialog Time Picker Strings -->
+    <string name="delete_task">&#10005;</string>
+
     <string name="select_time">Select Time</string>
     <string name="cancel">Cancel</string>
+    <string name="cancel_caps">CANCEL</string>
+    <string name="close">Close</string>
     <string name="select">Select</string>
     <string name="select_date">Select Date</string>
-    <!-- Dialog Aero Style Strings -->
+    <string name="save">Save</string>
+    <string name="create">Create</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+
     <string name="plus_subtask">Add Subtask</string>
-    <string name="enter_subtask">Enter subtask…</string>
+    <string name="enter_subtask">Enter subtask...</string>
     <string name="add">Add</string>
-    <!-- Activity Main Strings -->
+
     <string name="app_title">To Do</string>
-    <string name="manage_lists_icon">📋</string>
+    <string name="manage_lists_icon">&#128203;</string>
     <string name="add_list">+ List</string>
-    <string name="active_alarms">Active Alarms</string>
-    <string name="enter_new_task">Enter new task…</string>
-    <string name="your_tasks">Your Tasks:</string>
+    <string name="active_alarms">Coming Up</string>
+    <string name="enter_new_task">Enter new task...</string>
+    <string name="your_tasks">Your Tasks</string>
     <string name="zero_tasks">0 tasks</string>
-    <!-- Main Activity Strings -->
+
     <string name="due_date_format">Due: %s</string>
+    <string name="overdue_date_format">Overdue: %s</string>
     <string name="edit_task">Edit Task</string>
+    <string name="subtasks_progress">%1$d/%2$d</string>
+    <string name="tasks_completed_summary">%1$d/%2$d completed</string>
+    <string name="no_tasks">No tasks</string>
+    <string name="empty_list_message">No tasks yet. Add something to this list.</string>
+
+    <string name="error_enter_task">Please enter a task</string>
+    <string name="error_enter_subtask">Please enter subtask text</string>
+    <string name="error_task_empty">Task cannot be empty</string>
+    <string name="error_enter_list_name">Please enter a list name</string>
+    <string name="error_enter_new_list_name">Please enter a new list name</string>
+
+    <string name="add_subtask_to_format">Add Subtask to: %s</string>
+    <string name="create_new_list">Create New List</string>
+    <string name="enter_list_name">Enter list name...</string>
+    <string name="manage_lists">Manage Lists</string>
+    <string name="switch_to_this_list">Switch to this list</string>
+    <string name="rename_list">Rename list</string>
+    <string name="delete_list">Delete list</string>
+    <string name="list_title_format">List: %s</string>
+    <string name="list_exists_format">List \'%s\' already exists!</string>
+    <string name="list_created_format">List \'%s\' created!</string>
+    <string name="list_renamed_format">List renamed to \'%s\'</string>
+    <string name="list_deleted_format">List \'%s\' deleted</string>
+    <string name="delete_list_confirmation_format">Are you sure you want to delete \'%s\'?\n\nAll tasks in this list will be lost.</string>
+
+    <string name="set_due_date">Set Due Date</string>
+    <string name="remove_due_date">Remove due date</string>
+    <string name="due_date_removed">Due date removed</string>
+    <string name="due_in_one_hour">1 hour from now</string>
+    <string name="due_in_two_hours">2 hours from now</string>
+    <string name="due_in_three_hours">3 hours from now</string>
+    <string name="due_in_six_hours">6 hours from now</string>
+    <string name="due_in_twelve_hours">12 hours from now</string>
+    <string name="due_in_twenty_four_hours">24 hours from now</string>
+    <string name="due_in_two_days">2 days from now</string>
+    <string name="due_in_one_week">1 week from now</string>
+    <string name="custom_date_time">Custom date and time...</string>
+    <string name="one_hour">1 hour</string>
+    <string name="two_hours">2 hours</string>
+    <string name="three_hours">3 hours</string>
+    <string name="six_hours">6 hours</string>
+    <string name="twelve_hours">12 hours</string>
+    <string name="one_day">1 day</string>
+    <string name="two_days">2 days</string>
+    <string name="one_week">1 week</string>
+    <string name="hours_format">%d hours</string>
+    <string name="due_date_set_relative_format">Due date set: %s from now</string>
+    <string name="due_date_set_absolute_format">Due date set: %s</string>
+    <string name="reminder_channel_name">Task reminders</string>
+    <string name="reminder_channel_description">Notifications for tasks that are due</string>
+    <string name="reminder_notification_title">Task due</string>
+
+    <string name="move_subtask_title">Move Subtask</string>
+    <string name="make_standalone_task">Make standalone task</string>
+    <string name="move_to_different_task">Move to different task</string>
+    <string name="move_to_task_format">Move to: %s</string>
+    <string name="subtask_made_standalone">Subtask made standalone</string>
+    <string name="subtask_moved_format">Subtask moved to %s</string>
+    <string name="no_target_tasks_available">No other tasks available to move to</string>
+    <string name="select_target_task">Select Target Task</string>
+
+    <string name="alarm_summary_item">%1$s • %2$s</string>
 </resources>

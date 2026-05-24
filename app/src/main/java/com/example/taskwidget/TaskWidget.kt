@@ -223,9 +223,14 @@ class TaskWidget : AppWidgetProvider() {
     }
 
     private fun openAppToAddTask(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val currentListId = prefs.getString(KEY_CURRENT_LIST, "default") ?: "default"
+
         // Open the main app where users can add/edit tasks
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra(MainActivity.EXTRA_OPEN_LIST_ID, currentListId)
+            putExtra(MainActivity.EXTRA_FOCUS_TASK_INPUT, true)
         }
         context.startActivity(intent)
     }
@@ -262,6 +267,11 @@ class TaskWidget : AppWidgetProvider() {
                     // Toggle the task in the current list
                     val task = taskList.tasks[index]
                     task.completed = !task.completed
+                    if (task.completed) {
+                        TaskReminderScheduler.cancel(context, task.id)
+                    } else {
+                        TaskReminderScheduler.schedule(context, taskList, task)
+                    }
                     foundAndUpdated = true
                 }
 
@@ -294,6 +304,7 @@ class TaskWidget : AppWidgetProvider() {
 
                 if (taskList.id == currentListId && index in taskList.tasks.indices) {
                     // Delete the task from the current list
+                    TaskReminderScheduler.cancelTree(context, taskList.tasks[index])
                     taskList.tasks.removeAt(index)
                     foundAndDeleted = true
                 }

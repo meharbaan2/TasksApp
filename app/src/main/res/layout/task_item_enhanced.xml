@@ -30,7 +30,7 @@
             android:layout_height="24dp"
             android:text="@string/drag_handle"
             android:textSize="12sp"
-            android:textColor="#666666"
+            android:textColor="@color/aero_text_secondary"
             android:gravity="center"
             android:layout_marginEnd="8dp" />
 
@@ -42,7 +42,7 @@
             android:text="@string/checkbox_unchecked"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#0066CC"
+            android:textColor="@color/aero_text_primary"
             android:shadowColor="#80FFFFFF"
             android:shadowDx="1"
             android:shadowDy="1"
@@ -86,7 +86,7 @@
                     android:layout_weight="1"
                     android:text="@string/due_tomorrow"
                     android:textSize="11sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/aero_text_secondary"
                     android:visibility="gone" />
 
                 <TextView
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/subtasks_sample"
                     android:textSize="11sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/aero_text_secondary"
                     android:visibility="gone" />
 
             </LinearLayout>
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/alarm_sample"
                 android:textSize="11sp"
-                android:textColor="#FF6B6B"
+                android:textColor="@color/aero_warning"
                 android:background="@drawable/alarm_indicator_bg"
                 android:paddingHorizontal="4dp"
                 android:paddingVertical="2dp"
@@ -130,7 +130,7 @@
                 android:layout_height="24dp"
                 android:text="@string/move_subtask"
                 android:textSize="12sp"
-                android:textColor="#666666"
+                android:textColor="@color/aero_text_secondary"
                 android:gravity="center"
                 android:background="@drawable/icon_button_bg"
                 android:layout_marginEnd="4dp"
@@ -162,7 +162,7 @@
                 android:layout_height="24dp"
                 android:text="@string/delete_task"
                 android:textSize="12sp"
-                android:textColor="#FF4444"
+                android:textColor="@color/aero_danger"
                 android:gravity="center"
                 android:background="@drawable/icon_button_bg" />
 

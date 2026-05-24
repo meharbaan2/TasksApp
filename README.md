@@ -8,7 +8,7 @@
 - ✅ **Task Management**: Create, edit, delete, and organize tasks
 - ✅ **Subtasks Support**: Create nested subtasks for better organization
 - ✅ **Multiple Lists**: Create and manage multiple task lists
-- ✅ **Due Dates & Reminders**: Set due dates with smart time indicators
+- ✅ **Due Dates & Reminders**: Set due dates with smart time indicators and notification reminders
 - ✅ **Drag & Drop**: Reorder tasks with intuitive drag and drop
 - ✅ **Task Completion**: Mark tasks as complete with visual indicators
 
@@ -42,7 +42,7 @@
 ### Prerequisites
 - Android Studio Arctic Fox or later
 - Android SDK 26+ (Android 8.0 Oreo)
-- Java 8 or Kotlin support
+- Java 11 or Android Studio bundled JDK
 
 ### Building from Source
 
@@ -50,6 +50,7 @@
    ```bash
    git clone https://github.com/meharbaan2/TasksApp
    cd tasks-app
+   ```
 
 2. **Open in Android Studio**
    Open Android Studio
@@ -80,6 +81,7 @@
 1. Tap the **⏰ clock icon** on any task
 2. Choose from quick options or set custom date/time
 3. Due dates appear with smart time indicators (2h, 1d, 3w)
+4. Allow notifications when prompted to receive due-date reminders
 
 ### Using Multiple Lists
 1. Tap **Manage Lists** in the top right
@@ -106,6 +108,9 @@
 ### Key Components
 - `MainActivity.kt`: Main app interface and logic
 - `TaskWidget.kt`: Home screen widget provider
+- `TaskReminderScheduler.kt`: Schedules and cancels due-date reminders
+- `TaskReminderReceiver`: Shows due-date notifications
+- `TaskBootReceiver`: Reschedules reminders after device restart
 - `Task.kt`: Task data model
 - `TaskList.kt`: Task list data model
 
@@ -117,4 +122,4 @@
 The widget automatically uses the currently selected list from the main app. No additional configuration needed.
 
 ### Permissions
-This app requires no special permissions - everything works offline and locally.
+This app works offline and stores data locally. It uses notification permission on Android 13+ for due-date reminders and boot-completed permission to reschedule reminders after device restart.

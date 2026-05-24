@@ -1,15 +1,19 @@
 package com.example.taskwidget
 
+import android.Manifest
 import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -33,12 +37,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tasksCount: TextView
 
     private var currentListId = "default"
+    private var isRestoringSpinnerSelection = false
     private val taskLists = mutableListOf<TaskList>()
 
     companion object {
         const val PREFS_NAME = "TaskWidgetPrefs"
         const val KEY_TASK_LISTS = "task_lists"
         const val KEY_CURRENT_LIST = "current_list"
+        const val EXTRA_FOCUS_TASK_INPUT = "focus_task_input"
+        const val EXTRA_OPEN_LIST_ID = "open_list_id"
+        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +63,16 @@ class MainActivity : AppCompatActivity() {
 
         loadTaskLists()
         updateTime()
+        requestNotificationPermissionIfNeeded()
+        handleIncomingIntent(intent)
 
         updateWidget()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
     }
 
     private fun initializeViews() {
@@ -78,6 +94,17 @@ class MainActivity : AppCompatActivity() {
             } else {
                 taskInput.error = "Please enter a task"
             }
+        }
+
+        taskInput.setOnEditorActionListener { _, _, _ ->
+            val taskText = taskInput.text.toString().trim()
+            if (taskText.isNotEmpty()) {
+                addTask(taskText)
+                taskInput.text.clear()
+            } else {
+                taskInput.error = "Please enter a task"
+            }
+            true
         }
 
         addListButton.setOnClickListener {
@@ -102,11 +129,17 @@ class MainActivity : AppCompatActivity() {
 
         listSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (isRestoringSpinnerSelection) {
+                    return
+                }
+
                 if (taskLists.isNotEmpty() && position < taskLists.size) {
-                    currentListId = taskLists[position].id
-                    saveCurrentList() // This now saves the ID and updates widget
-                    refreshTasks()
-                    // updateWidget() is called inside saveCurrentList()
+                    val selectedListId = taskLists[position].id
+                    if (selectedListId != currentListId) {
+                        currentListId = selectedListId
+                        saveCurrentList()
+                        refreshTasks()
+                    }
                 }
             }
 
@@ -144,12 +177,12 @@ class MainActivity : AppCompatActivity() {
     private fun refreshTasks() {
         taskContainer.removeAllViews()
         val currentList = taskLists.find { it.id == currentListId } ?: return
+        updateAlarmSummary(currentList)
 
         if (currentList.tasks.isEmpty()) {
-            // Show empty state
             val emptyView = TextView(this).apply {
-                text = "No tasks yet. Add a task above!"
-                setTextColor(Color.GRAY)
+                text = "No tasks yet. Add something to this list."
+                setTextColor(ContextCompat.getColor(this@MainActivity, android.R.color.darker_gray))
                 textSize = 16f
                 setPadding(0, 32, 0, 0)
             }
@@ -261,6 +294,13 @@ class MainActivity : AppCompatActivity() {
         // Click listeners
         taskCheckbox.setOnClickListener {
             task.completed = !task.completed
+            if (task.completed) {
+                TaskReminderScheduler.cancel(this, task.id)
+            } else {
+                taskLists.find { it.id == currentListId }?.let { list ->
+                    TaskReminderScheduler.schedule(this, list, task)
+                }
+            }
             saveTaskLists()
             refreshTasks()
             updateTasksCount()
@@ -435,6 +475,7 @@ class MainActivity : AppCompatActivity() {
                 when (option) {
                     "Remove due date" -> {
                         task.dueDate = null
+                        TaskReminderScheduler.cancel(this@MainActivity, task.id)
                         saveTaskLists()
                         refreshTasks()
                         updateWidget()
@@ -491,23 +532,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun deleteTask(task: Task) {
         val currentList = taskLists.find { it.id == currentListId } ?: return
-
-        // Remove from main tasks
-        currentList.tasks.removeAll { it.id == task.id }
-
-        // Also remove from any subtasks
-        currentList.tasks.forEach { parentTask ->
-            parentTask.subtasks.removeAll { it.id == task.id }
+        if (currentList.tasks.removeTaskById(task.id)) {
+            TaskReminderScheduler.cancelTree(this, task)
+            saveTaskLists()
+            refreshTasks()
+            updateWidget()
         }
-
-        saveTaskLists()
-        refreshTasks()
-        updateWidget()
     }
 
     private fun loadTaskLists() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val listsJson = prefs.getString(KEY_TASK_LISTS, null) ?: "[]"
+        val savedListId = prefs.getString(KEY_CURRENT_LIST, "default") ?: "default"
 
         try {
             val jsonArray = JSONArray(listsJson)
@@ -534,18 +570,22 @@ class MainActivity : AppCompatActivity() {
                 saveTaskLists()
             }
 
-            // Set current list to first one
             if (taskLists.isNotEmpty()) {
-                currentListId = taskLists.first().id
+                currentListId = taskLists.find { it.id == savedListId }?.id ?: taskLists.first().id
+                saveCurrentList(updateWidgetNow = false)
                 updateListSpinner()
                 refreshTasks()
+                TaskReminderScheduler.scheduleAll(this, taskLists)
             }
         } catch (e: Exception) {
             e.printStackTrace()
             // Initialize with default list on error
             if (taskLists.isEmpty()) {
                 taskLists.add(TaskList(name = "My Tasks", id = "default"))
+                currentListId = "default"
                 saveTaskLists()
+                updateListSpinner()
+                refreshTasks()
             }
         }
     }
@@ -558,11 +598,14 @@ class MainActivity : AppCompatActivity() {
         }
         prefs.edit {
             putString(KEY_TASK_LISTS, jsonArray.toString())
+            putString(KEY_CURRENT_LIST, currentListId)
         }
     }
 
     private fun updateListSpinner() {
         val adapter = listSpinner.adapter as? ArrayAdapter<String> ?: return
+        isRestoringSpinnerSelection = true
+
         adapter.clear()
         taskLists.forEach { list ->
             adapter.add(list.name)
@@ -572,8 +615,10 @@ class MainActivity : AppCompatActivity() {
         // Select current list
         val currentIndex = taskLists.indexOfFirst { it.id == currentListId }
         if (currentIndex >= 0) {
-            listSpinner.setSelection(currentIndex)
+            listSpinner.setSelection(currentIndex, false)
         }
+
+        listSpinner.post { isRestoringSpinnerSelection = false }
     }
 
     private fun updateTime() {
@@ -644,23 +689,23 @@ class MainActivity : AppCompatActivity() {
 
         val newList = TaskList(name = listName)
         taskLists.add(newList)
+        currentListId = newList.id
         saveTaskLists()
         updateListSpinner()
-
-        // Switch to the new list
-        currentListId = newList.id
-        listSpinner.setSelection(taskLists.size - 1)
         refreshTasks()
+        updateWidget()
 
         Toast.makeText(this, "List '$listName' created!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun saveCurrentList() {
+    private fun saveCurrentList(updateWidgetNow: Boolean = true) {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         prefs.edit {
             putString(KEY_CURRENT_LIST, currentListId)
         }
-        updateWidget()
+        if (updateWidgetNow) {
+            updateWidget()
+        }
     }
 
     private fun startDragging(taskView: View, task: Task) {
@@ -746,6 +791,38 @@ class MainActivity : AppCompatActivity() {
         updateWidget()
     }
 
+    private fun updateAlarmSummary(taskList: TaskList) {
+        while (alarmContainer.childCount > 1) {
+            alarmContainer.removeViewAt(1)
+        }
+
+        val dueTasks = taskList.tasks.flattenTasks()
+            .filter { !it.completed && it.dueDate != null }
+            .sortedBy { it.dueDate }
+
+        if (dueTasks.isEmpty()) {
+            alarmContainer.visibility = View.GONE
+            return
+        }
+
+        alarmContainer.visibility = View.VISIBLE
+        dueTasks.take(3).forEach { task ->
+            val dueDate = task.dueDate ?: return@forEach
+            val chip = TextView(this).apply {
+                text = "${task.text} • ${formatDueIndicator(dueDate)}"
+                setTextColor(
+                    ContextCompat.getColor(
+                        this@MainActivity,
+                        if (task.isOverdue()) R.color.aero_danger else R.color.aero_text_primary
+                    )
+                )
+                background = ContextCompat.getDrawable(this@MainActivity, R.drawable.task_item_bg)
+                setPadding(16, 12, 16, 12)
+            }
+            alarmContainer.addView(chip)
+        }
+    }
+
     private fun showMoveSubtaskDialog(subtask: Task) {
         val currentList = taskLists.find { it.id == currentListId } ?: return
 
@@ -777,10 +854,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeSubtaskStandalone(subtask: Task) {
         val currentList = taskLists.find { it.id == currentListId } ?: return
-        val parentTask = currentList.tasks.find { it.id == subtask.parentTaskId }
+        val parentTask = currentList.tasks.findTask(subtask.parentTaskId ?: return) ?: return
 
-        parentTask?.subtasks?.removeAll { it.id == subtask.id }
+        if (!parentTask.subtasks.removeTaskById(subtask.id)) {
+            return
+        }
         subtask.parentTaskId = null
+        subtask.listId = currentList.id
         currentList.tasks.add(subtask)
 
         saveTaskLists()
@@ -791,10 +871,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun moveSubtaskToTask(subtask: Task, targetTask: Task) {
         val currentList = taskLists.find { it.id == currentListId } ?: return
-        val parentTask = currentList.tasks.find { it.id == subtask.parentTaskId }
+        val parentTask = currentList.tasks.findTask(subtask.parentTaskId ?: return) ?: return
 
-        parentTask?.subtasks?.removeAll { it.id == subtask.id }
+        if (!parentTask.subtasks.removeTaskById(subtask.id)) {
+            return
+        }
         subtask.parentTaskId = targetTask.id
+        subtask.listId = currentList.id
         targetTask.subtasks.add(subtask)
 
         saveTaskLists()
@@ -919,8 +1002,10 @@ class MainActivity : AppCompatActivity() {
             when (position) {
                 0 -> { // Switch to list
                     currentListId = taskList.id
-                    listSpinner.setSelection(taskLists.indexOfFirst { it.id == taskList.id })
+                    saveCurrentList(updateWidgetNow = false)
+                    updateListSpinner()
                     refreshTasks()
+                    updateWidget()
                     dialog.dismiss()
                 }
                 1 -> { // Rename list
@@ -1020,16 +1105,19 @@ class MainActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         positiveButton.setOnClickListener {
+            val deletedIndex = taskLists.indexOfFirst { it.id == taskList.id }
             taskLists.removeAll { it.id == taskList.id }
 
             // Switch to another list if we're deleting the current one
             if (currentListId == taskList.id && taskLists.isNotEmpty()) {
-                currentListId = taskLists.first().id
+                val fallbackIndex = (deletedIndex - 1).coerceAtLeast(0).coerceAtMost(taskLists.lastIndex)
+                currentListId = taskLists[fallbackIndex].id
             }
 
             saveTaskLists()
             updateListSpinner()
             refreshTasks()
+            updateWidget()
             dialog.dismiss()
             Toast.makeText(this, "List '${taskList.name}' deleted", Toast.LENGTH_SHORT).show()
         }
@@ -1043,6 +1131,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDueDate(task: Task, hoursToAdd: Int) {
         task.dueDate = System.currentTimeMillis() + (hoursToAdd * 60 * 60 * 1000L)
+        taskLists.find { it.id == currentListId }?.let { list ->
+            TaskReminderScheduler.schedule(this, list, task)
+        }
         saveTaskLists()
         refreshTasks()
         updateWidget()
@@ -1133,6 +1224,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             task.dueDate = calendar.timeInMillis
+            taskLists.find { it.id == currentListId }?.let { list ->
+                TaskReminderScheduler.schedule(this, list, task)
+            }
             saveTaskLists()
             refreshTasks()
             updateWidget()
@@ -1170,5 +1264,38 @@ class MainActivity : AppCompatActivity() {
         // Refresh tasks whenever the app comes to foreground
         loadTaskLists()
         updateTime()
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                NOTIFICATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    private fun handleIncomingIntent(intent: Intent?) {
+        if (intent == null) return
+
+        val requestedListId = intent.getStringExtra(EXTRA_OPEN_LIST_ID)
+        if (requestedListId != null && taskLists.any { it.id == requestedListId }) {
+            currentListId = requestedListId
+            saveCurrentList(updateWidgetNow = false)
+            updateListSpinner()
+            refreshTasks()
+        }
+
+        if (intent.getBooleanExtra(EXTRA_FOCUS_TASK_INPUT, false)) {
+            taskInput.requestFocus()
+            taskInput.post {
+                val inputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(taskInput, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
     }
 }

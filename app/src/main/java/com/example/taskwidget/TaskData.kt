@@ -95,3 +95,69 @@ data class Task(
         }
     }
 }
+
+fun Task.findTask(taskId: String): Task? {
+    if (id == taskId) return this
+    subtasks.forEach { subtask ->
+        subtask.findTask(taskId)?.let { return it }
+    }
+    return null
+}
+
+fun List<Task>.findTask(taskId: String): Task? {
+    forEach { task ->
+        task.findTask(taskId)?.let { return it }
+    }
+    return null
+}
+
+fun MutableList<Task>.removeTaskById(taskId: String): Boolean {
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        val task = iterator.next()
+        if (task.id == taskId) {
+            iterator.remove()
+            return true
+        }
+        if (task.subtasks.removeTaskById(taskId)) {
+            return true
+        }
+    }
+    return false
+}
+
+fun List<Task>.flattenTasks(): List<Task> {
+    val result = mutableListOf<Task>()
+
+    fun collect(tasks: List<Task>) {
+        tasks.forEach { task ->
+            result.add(task)
+            collect(task.subtasks)
+        }
+    }
+
+    collect(this)
+    return result
+}
+
+fun Task.isOverdue(now: Long = System.currentTimeMillis()): Boolean {
+    val due = dueDate ?: return false
+    return !completed && due < now
+}
+
+fun formatDueIndicator(dueDate: Long, now: Long = System.currentTimeMillis()): String {
+    val diff = dueDate - now
+    if (diff <= 0L) return "Overdue"
+
+    val minutesLeft = diff / (1000 * 60)
+    val hoursLeft = diff / (1000 * 60 * 60)
+    val daysLeft = diff / (1000 * 60 * 60 * 24)
+
+    return when {
+        daysLeft >= 7 -> "${daysLeft / 7}w"
+        daysLeft >= 1 -> "${daysLeft}d"
+        hoursLeft >= 1 -> "${hoursLeft}h"
+        minutesLeft >= 1 -> "${minutesLeft}m"
+        else -> "Now"
+    }
+}

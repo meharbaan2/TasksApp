@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aero_text_primary">#0066CC</color>
+    <color name="aero_text_secondary">#5F6F82</color>
+    <color name="aero_warning">#D96B00</color>
+    <color name="aero_danger">#E24C4C</color>
+    <color name="aero_success">#1E9A5A</color>
+    <color name="aero_divider">#330066CC</color>
+    <color name="aero_drag_overlay">#220066CC</color>
+    <color name="aero_surface_start">#E6F7FF</color>
+    <color name="aero_surface_mid">#B3E6FF</color>
+    <color name="aero_surface_end">#80D4FF</color>
+    <color name="aero_glass_highlight">#80FFFFFF</color>
+    <color name="aero_glass_border">#60FFFFFF</color>
+</resources>
